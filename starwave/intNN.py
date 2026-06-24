@@ -151,7 +151,7 @@ class intNN:
         Parameters
         ----------
         mss : float
-            Stellar mass (M☉) at which to evaluate the isochrone.
+            Stellar mass (M_sun) at which to evaluate the isochrone.
         age : float
             Stellar age (Gyr). If outside ``[l_age, u_age]``, all magnitudes
             are returned as ``NaN``.

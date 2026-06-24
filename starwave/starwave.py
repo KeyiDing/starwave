@@ -99,33 +99,33 @@ class StarWave:
         used to compute band-specific extinction via ``extinction.ccm89``.
     imf_type : {'spl', 'bpl', 'ln'}
         IMF parameterization to fit:
-        ``'spl'`` – single power-law,
-        ``'bpl'`` – broken power-law,
-        ``'ln'``  – lognormal + high-mass power-law.
+        ``'spl'`` - single power-law,
+        ``'bpl'`` - broken power-law,
+        ``'ln'``  - lognormal + high-mass power-law.
     sfh_type : {'gaussian', 'grid', 'empirical_mdf'}, optional
         Star-formation history type:
-        ``'gaussian'``      – single-burst 2-D Gaussian in (age, [Fe/H]),
-        ``'grid'``          – discrete grid-based SFH (requires ``sfh_grid``),
-        ``'empirical_mdf'`` – Gaussian/exponential age with empirical MDF
+        ``'gaussian'``      - single-burst 2-D Gaussian in (age, [Fe/H]),
+        ``'grid'``          - discrete grid-based SFH (requires ``sfh_grid``),
+        ``'empirical_mdf'`` - Gaussian/exponential age with empirical MDF
                               (requires ``feh_dis`` and ``age_type``).
         Default is ``'gaussian'``.
     dm_type : {'gaussian', 'dg'}, optional
         Distance-modulus distribution:
-        ``'dg'``       – fixed double-Gaussian line-of-sight distance,
-        ``'gaussian'`` – Gaussian with mean ``dm`` and spread ``sig_dm``.
+        ``'dg'``       - fixed double-Gaussian line-of-sight distance,
+        ``'gaussian'`` - Gaussian with mean ``dm`` and spread ``sig_dm``.
         Default is ``'gaussian'``.
     av_type : {'lognormal', 'gaussian'}, optional
         Extinction distribution:
-        ``'lognormal'`` – lognormal parameterised by ``av_logn_mu`` and
+        ``'lognormal'`` - lognormal parameterised by ``av_logn_mu`` and
                           ``av_logn_sigma``,
-        ``'gaussian'``  – Gaussian with mean ``av`` and spread ``sig_av``.
+        ``'gaussian'``  - Gaussian with mean ``av`` and spread ``sig_av``.
         Default is ``'lognormal'``.
     sfh_grid : dict or None, optional
         Required when ``sfh_type='grid'``. Must contain:
 
-        * ``'mets'``          – array of *M* [Fe/H] grid points,
-        * ``'ages'``          – array of *A* age (Gyr) grid points,
-        * ``'probabilities'`` – *M × A* weight matrix.
+        * ``'mets'``          - array of *M* [Fe/H] grid points,
+        * ``'ages'``          - array of *A* age (Gyr) grid points,
+        * ``'probabilities'`` - *M * A* weight matrix.
     Rv : float, optional
         Total-to-selective extinction ratio. Default is ``3.1``.
     trgb : float, optional
@@ -133,7 +133,7 @@ class StarWave:
         value are excluded. Default is ``-100`` (no cut applied).
     mass_range : tuple of float or None, optional
         ``(min_mass, max_mass)`` in solar masses. Falls back to the
-        isochrone's lower limit – 8 M☉ if ``None`` or invalid.
+        isochrone's lower limit - 8 M_sun if ``None`` or invalid.
     color_range : list of tuple or None, optional
         Per-color selection window as a list of ``(min, max)`` tuples,
         one per color index. Defaults to ``(-100, 100)`` for each color.
@@ -249,7 +249,7 @@ class StarWave:
         self.asdf = asdf
         self.return_inputmags = False  # if True, return noiseless mags in cmd_sim
 
-        # Pre-compute the noise residuals (output – input) for each AS entry.
+        # Pre-compute the noise residuals (output - input) for each AS entry.
         self.asdf_noise = (
             self.asdf[self.bands_out].to_numpy()
             - self.asdf[self.bands_in].to_numpy()
@@ -292,7 +292,7 @@ class StarWave:
             print('no color correction applied to synthetic CMDs')
 
         # ------------------------------------------------------------------ #
-        # Minimum log-mass threshold (ln 0.1 M☉ ≈ –2.3)                      #
+        # Minimum log-mass threshold (ln 0.1 M_sun ≈ -2.3)                      #
         # ------------------------------------------------------------------ #
         self.lim_logmass = np.log(0.1)
 
@@ -331,8 +331,8 @@ class StarWave:
         isodf : pandas.DataFrame
             Multi-indexed isochrone DataFrame (indexed on age, [Fe/H], mass).
         mass_range : tuple of float or None
-            Desired ``(min_mass, max_mass)`` in M☉. Upper limit is capped at
-            8 M☉ regardless of the isochrone grid.
+            Desired ``(min_mass, max_mass)`` in M_sun. Upper limit is capped at
+            8 M_sun regardless of the isochrone grid.
         age_range : tuple of float or None
             Desired ``(min_age, max_age)`` in Gyr.
         feh_range : tuple of float or None
@@ -347,7 +347,7 @@ class StarWave:
 
         iso_masses = isodf.index.get_level_values("mass").unique()
         iso_mass_min = iso_masses.min()
-        default_upper_mass = 8.0  # upper mass cut for binary systems (M☉)
+        default_upper_mass = 8.0  # upper mass cut for binary systems (M_sun)
 
         # ---- Mass range ----
         mass_valid = (
@@ -360,13 +360,13 @@ class StarWave:
         if mass_valid:
             self.mass_range = mass_range
             print(
-                "Using provided mass range: %.2f – %.2f M☉"
+                "Using provided mass range: %.2f - %.2f M_sun"
                 % (mass_range[0], mass_range[1])
             )
         else:
             self.mass_range = (iso_mass_min, default_upper_mass)
             print(
-                "Mass range not provided or invalid; using %.2f – %.2f M☉"
+                "Mass range not provided or invalid; using %.2f - %.2f M_sun"
                 % (iso_mass_min, default_upper_mass)
             )
 
@@ -381,13 +381,13 @@ class StarWave:
         if age_valid:
             self.age_range = age_range
             print(
-                "Using provided age range: %.2f – %.2f Gyr"
+                "Using provided age range: %.2f - %.2f Gyr"
                 % (age_range[0], age_range[1])
             )
         else:
             self.age_range = (iso_age_min, iso_age_max)
             print(
-                "Age range not provided or invalid; using full isochrone range: %.2f – %.2f Gyr"
+                "Age range not provided or invalid; using full isochrone range: %.2f - %.2f Gyr"
                 % (iso_age_min, iso_age_max)
             )
 
@@ -402,13 +402,13 @@ class StarWave:
         if feh_valid:
             self.feh_range = feh_range
             print(
-                "Using provided metallicity range: %.2f – %.2f"
+                "Using provided metallicity range: %.2f - %.2f"
                 % (feh_range[0], feh_range[1])
             )
         else:
             self.feh_range = (iso_feh_min, iso_feh_max)
             print(
-                "Metallicity range not provided or invalid; using full isochrone range: %.2f – %.2f"
+                "Metallicity range not provided or invalid; using full isochrone range: %.2f - %.2f"
                 % (iso_feh_min, iso_feh_max)
             )
 
@@ -429,7 +429,7 @@ class StarWave:
         observed_cmd : array-like of shape (N, D)
             Observed CMD magnitudes/colors (unscaled).
         gamma : float or None, optional
-            RBF kernel bandwidth parameter ``γ``. If ``None``, ``gamma`` is
+            RBF kernel bandwidth parameter ``gamma``. If ``None``, ``gamma`` is
             chosen automatically via :meth:`best_gamma`.
         n_components : int, optional
             Number of Nyström components (dimension of the summary statistic).
@@ -441,7 +441,7 @@ class StarWave:
         Returns
         -------
         scaled_observed_cmd : ndarray of shape (N, D)
-            The min-max–scaled observed CMD.
+            The min-max-scaled observed CMD.
         """
         # Fit min-max scaler to the observed CMD
         self.cmd_scaler = MinMaxScaler()
@@ -597,7 +597,7 @@ class StarWave:
 
         The reference (bluest) band is kept as an apparent magnitude; all
         other bands are replaced by their color relative to the reference
-        band (``band[i] – band[0]``).
+        band (``band[i] - band[0]``).
 
         Parameters
         ----------
@@ -612,7 +612,7 @@ class StarWave:
         -------
         cmd : ndarray of shape (N, D)
             Modified in-place: column 0 is the reference magnitude; columns
-            1 … D-1 are colors ``mag[i] – mag[0]``.
+            1 … D-1 are colors ``mag[i] - mag[0]``.
         """
         cmd = mags
         for ii in range(mags.shape[1] - 1):
@@ -651,7 +651,7 @@ class StarWave:
         Returns
         -------
         gamma : float
-            Optimal ``γ = 1 / (2 σ²)`` for the RBF kernel.
+            Optimal ``gamma = 1 / (2 sigma²)`` for the RBF kernel.
         """
         # Build a KD-tree and compute the distance to the NN-th neighbour
         nbr = NearestNeighbors(
@@ -745,9 +745,9 @@ class StarWave:
         pdict : dict
             Parameter dictionary. Required keys depend on ``dm_type``:
 
-            * ``'dg'``      – ``mu1``, ``deltamu``, ``sigma1``, ``sigma2``,
+            * ``'dg'``      - ``mu1``, ``deltamu``, ``sigma1``, ``sigma2``,
               ``amprat``.
-            * otherwise     – ``dm``, ``sig_dm``.
+            * otherwise     - ``dm``, ``sig_dm``.
         dm_type : str
             If ``'dg'``, returns a double-Gaussian LOS distance distribution
             (constructed via :func:`set_GR_dgdm`). Otherwise returns a
@@ -780,8 +780,8 @@ class StarWave:
         pdict : dict
             Parameter dictionary. Required keys depend on ``av_type``:
 
-            * ``'lognormal'`` – ``av_logn_mu``, ``av_logn_sigma``.
-            * otherwise       – ``av``, ``sig_av``.
+            * ``'lognormal'`` - ``av_logn_mu``, ``av_logn_sigma``.
+            * otherwise       - ``av``, ``sig_av``.
         av_type : str
             If ``'lognormal'``, returns a lognormal Av distribution.
             Otherwise returns a wrapped ``scipy.stats.norm``.
@@ -796,7 +796,7 @@ class StarWave:
         -----
         The lognormal is parameterised by its *mean* (``av_logn_mu``) and
         *standard deviation* (``av_logn_sigma``) rather than the underlying
-        normal's ``μ`` and ``σ``, and is converted internally.
+        normal's ``mu`` and ``sigma``, and is converted internally.
         """
         if av_type == "lognormal":
             # Convert mean/std parameterisation to scipy's (s, scale) form
@@ -1151,7 +1151,7 @@ class StarWave:
         def simcmd(imf_type):
             return lambda params: self.cmd_sim(params, imf_type=imf_type)
 
-        Nobs = len(scaled_observed_cmd)  # noqa: F841 – available for log_int tuning
+        Nobs = len(scaled_observed_cmd)  # noqa: F841 - available for log_int tuning
 
         # Print a summary of all priors before fitting
         print_prior_summary(self.params)

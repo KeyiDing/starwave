@@ -6,9 +6,9 @@ Magnitude utilities for StarWave's synthetic CMD generation.
 Provides three functions that together convert isochrone-interpolated
 absolute magnitudes into noise-injected observable magnitudes:
 
-* :func:`get_absolute_mags`  – isochrone lookup for single or binary stars.
-* :func:`get_observable_mags` – apply distance modulus and extinction.
-* :func:`get_noisy_mags`     – inject photometric noise via an artificial-star
+* :func:`get_absolute_mags`  - isochrone lookup for single or binary stars.
+* :func:`get_observable_mags` - apply distance modulus and extinction.
+* :func:`get_noisy_mags`     - inject photometric noise via an artificial-star
                                KD-tree lookup.
 """
 
@@ -34,7 +34,7 @@ def get_absolute_mags(logsysmass, age, met, binq, iso_int, bands):
     Parameters
     ----------
     logsysmass : float
-        Natural logarithm of the total system mass (M☉). The function
+        Natural logarithm of the total system mass (M_sun). The function
         exponentiates this internally so that the IMF sampler can work in
         log-mass space.
     age : float
@@ -77,7 +77,7 @@ def get_absolute_mags(logsysmass, age, met, binq, iso_int, bands):
 
     where ``NaN`` components are excluded from the sum.
     """
-    # Convert log-mass back to linear mass (M☉)
+    # Convert log-mass back to linear mass (M_sun)
     sysmass = np.exp(logsysmass)
     nb = len(bands)
 

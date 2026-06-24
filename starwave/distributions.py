@@ -5,18 +5,18 @@ Stellar population distribution utilities for StarWave.
 
 Provides:
 
-* :func:`nearestPD`        – project a matrix onto the nearest positive-definite matrix.
-* :func:`isPD`             – test whether a matrix is positive-definite.
-* :class:`exponential_decay` – exponential SFH age distribution.
-* :class:`SW_SFH`          – 2-D (age, [Fe/H]) SFH wrapper for SciPy distributions.
-* :class:`Emp_MDF_Sci_Age` – SFH sampler combining an empirical MDF with a
+* :func:`nearestPD`        - project a matrix onto the nearest positive-definite matrix.
+* :func:`isPD`             - test whether a matrix is positive-definite.
+* :class:`exponential_decay` - exponential SFH age distribution.
+* :class:`SW_SFH`          - 2-D (age, [Fe/H]) SFH wrapper for SciPy distributions.
+* :class:`Emp_MDF_Sci_Age` - SFH sampler combining an empirical MDF with a
                               SciPy age distribution.
-* :class:`GridSFH`         – grid-based SFH sampler.
-* :func:`set_GR_spl`       – single power-law (Salpeter) IMF sampler.
-* :func:`set_GR_bpl`       – broken power-law (Kroupa) IMF sampler.
-* :func:`set_GR_ln10full`  – lognormal + power-law (Chabrier) IMF sampler.
-* :func:`set_GR_dgdm`      – double-Gaussian distance-modulus sampler.
-* :func:`set_GR_unif`      – uniform binary mass-ratio sampler.
+* :class:`GridSFH`         - grid-based SFH sampler.
+* :func:`set_GR_spl`       - single power-law (Salpeter) IMF sampler.
+* :func:`set_GR_bpl`       - broken power-law (Kroupa) IMF sampler.
+* :func:`set_GR_ln10full`  - lognormal + power-law (Chabrier) IMF sampler.
+* :func:`set_GR_dgdm`      - double-Gaussian distance-modulus sampler.
+* :func:`set_GR_unif`      - uniform binary mass-ratio sampler.
 """
 
 # ---------------------------------------------------------------------------
@@ -179,7 +179,7 @@ class exponential_decay:
         ndarray of shape (N,)
             Sampled ages in Gyr, all less than ``self.loc``.
         """
-        # Negate a standard exponential (loc=−self.loc) to obtain ages < loc
+        # Negate a standard exponential (loc=-self.loc) to obtain ages < loc
         return -stats.expon.rvs(scale=self.scale, loc=-self.loc, size=N)
 
 
@@ -326,9 +326,9 @@ class GridSFH:
     sfh_grid : dict
         Dictionary with the following required keys:
 
-        * ``'mets'``          – array of shape ``(M+1,)`` with [Fe/H] bin edges.
-        * ``'ages'``          – array of shape ``(A+1,)`` with age (Gyr) bin edges.
-        * ``'probabilities'`` – array of shape ``(M*A,)`` or ``(M, A)`` with
+        * ``'mets'``          - array of shape ``(M+1,)`` with [Fe/H] bin edges.
+        * ``'ages'``          - array of shape ``(A+1,)`` with age (Gyr) bin edges.
+        * ``'probabilities'`` - array of shape ``(M*A,)`` or ``(M, A)`` with
           unnormalised weights for each ``(metallicity, age)`` cell.
 
     Examples
@@ -404,15 +404,15 @@ def set_GR_spl(slope, mass_range):
 
         \\xi(\\ln m) \\propto m^{\\alpha + 1}
 
-    where ``slope`` = α is typically ``−2.3``.
+    where ``slope`` = alpha is typically ``-2.3``.
 
     Parameters
     ----------
     slope : float
-        Power-law exponent α. The log-mass PDF is proportional to
+        Power-law exponent alpha. The log-mass PDF is proportional to
         ``exp(log_m * (slope + 1))``.
     mass_range : tuple of float
-        ``(min_mass, max_mass)`` in M☉ over which to define the IMF.
+        ``(min_mass, max_mass)`` in M_sun over which to define the IMF.
 
     Returns
     -------
@@ -448,13 +448,13 @@ def set_GR_bpl(alow, ahigh, bm, mass_range):
     Parameters
     ----------
     alow : float
-        Low-mass power-law slope α_low (typically ``−1.3``).
+        Low-mass power-law slope alpha_low (typically ``-1.3``).
     ahigh : float
-        High-mass power-law slope α_high (typically ``−2.3``).
+        High-mass power-law slope alpha_high (typically ``-2.3``).
     bm : float
-        Break (transition) mass in M☉ (typically ``0.5``).
+        Break (transition) mass in M_sun (typically ``0.5``).
     mass_range : tuple of float
-        ``(min_mass, max_mass)`` in M☉ over which to define the IMF.
+        ``(min_mass, max_mass)`` in M_sun over which to define the IMF.
 
     Returns
     -------
@@ -499,17 +499,17 @@ def set_GR_ln10full(mc, sm, mt, sl, mass_range):
     Parameters
     ----------
     mc : float
-        Characteristic (peak) mass of the lognormal in M☉ (typically
+        Characteristic (peak) mass of the lognormal in M_sun (typically
         ``0.25``).
     sm : float
         Width (sigma) of the lognormal in dex (typically ``0.55``).
     mt : float
-        Transition mass in M☉ above which the power-law takes over
+        Transition mass in M_sun above which the power-law takes over
         (typically ``1.0``).
     sl : float
-        High-mass power-law slope α (typically ``−2.3``).
+        High-mass power-law slope alpha (typically ``-2.3``).
     mass_range : tuple of float
-        ``(min_mass, max_mass)`` in M☉ over which to define the IMF.
+        ``(min_mass, max_mass)`` in M_sun over which to define the IMF.
 
     Returns
     -------
@@ -583,7 +583,7 @@ def set_GR_dgdm(mu1, deltamu, sigma1, sigma2, amprat):
     ngauss = stats.norm(loc=mu1, scale=sigma1)               # nearer component
     fgauss = stats.norm(loc=mu1 + deltamu, scale=sigma2)     # farther component
 
-    # Set the evaluation range to 5σ beyond either Gaussian
+    # Set the evaluation range to 5sigma beyond either Gaussian
     gxmin = np.min([mu1 - 5 * sigma1, mu1 + deltamu - 5 * sigma2])
     gxmax = np.max([mu1 + 5 * sigma1, mu1 + deltamu + 5 * sigma2])
 
@@ -601,8 +601,8 @@ def set_GR_unif(bf):
 
     Returns a piecewise-constant distribution that places fraction ``bf``
     of probability mass uniformly on ``[0, 1]`` (binary systems with mass
-    ratio ``q ∈ [0, 1]``) and fraction ``1 − bf`` on ``(−∞, 0)`` (encoded
-    as the interval ``[−1, 0)`` here) to represent single stars.
+    ratio ``q ∈ [0, 1]``) and fraction ``1 - bf`` on ``(-∞, 0)`` (encoded
+    as the interval ``[-1, 0)`` here) to represent single stars.
 
     In :func:`~getmags.get_absolute_mags`, a drawn value ``binq < 0``
     signals a single star, while ``binq ≥ 0`` signals a binary with mass

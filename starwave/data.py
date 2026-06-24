@@ -5,9 +5,9 @@ Data-loading and CMD visualisation utilities for StarWave.
 
 Provides two classes:
 
-* :class:`MagData`   – container for observed photometric catalogues with
+* :class:`MagData`   - container for observed photometric catalogues with
                        CMD plotting and format-conversion helpers.
-* :class:`SimTable`  – loader for artificial-star simulation dictionaries,
+* :class:`SimTable`  - loader for artificial-star simulation dictionaries,
                        with support for single and multi-file concatenation.
 """
 
@@ -42,9 +42,9 @@ class MagData:
     **kwargs : optional
         If provided, must include:
 
-        * ``magnitudes`` – array-like of shape ``(N, B)`` containing
+        * ``magnitudes`` - array-like of shape ``(N, B)`` containing
           magnitudes for *N* stars in *B* bands.
-        * ``names``      – list of *B* band-name strings used as column
+        * ``names``      - list of *B* band-name strings used as column
           headers in the internal DataFrame.
 
     Attributes

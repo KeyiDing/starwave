@@ -5,19 +5,19 @@ Parameter and prior infrastructure for StarWave.
 
 This module defines:
 
-* :class:`SWDist`        – thin wrapper around a SciPy distribution that
+* :class:`SWDist`        - thin wrapper around a SciPy distribution that
                            exposes ``.sample()`` and ``.log_prob()``.
-* :class:`SWParameter`   – ``OrderedDict``-based container for a single
+* :class:`SWParameter`   - ``OrderedDict``-based container for a single
                            model parameter (value, bounds, prior, fixed flag).
-* :class:`SWParameters`  – ``OrderedDict``-based collection of
+* :class:`SWParameters`  - ``OrderedDict``-based collection of
                            :class:`SWParameter` objects with convenience
                            methods for prior construction and printing.
-* :func:`make_params`    – factory that assembles the full
+* :func:`make_params`    - factory that assembles the full
                            :class:`SWParameters` object for a given
                            combination of IMF, SFH, DM, and Av types.
-* :func:`print_prior_summary` – human-readable prior summary to stdout
+* :func:`print_prior_summary` - human-readable prior summary to stdout
                                 and/or a log file.
-* :class:`MultipleIndependent` – joint PyTorch distribution built from an
+* :class:`MultipleIndependent` - joint PyTorch distribution built from an
                                   ordered sequence of independent marginals.
 """
 
@@ -239,9 +239,9 @@ class SWParameters(OrderedDict):
     kwargs : dict or None, optional
         Optional printing/saving options:
 
-        * ``'filename'`` *(str or None)* – if set, the prior summary is
+        * ``'filename'`` *(str or None)* - if set, the prior summary is
           written to this log file.
-        * ``'verbose'`` *(bool)* – if ``True``, the summary is also
+        * ``'verbose'`` *(bool)* - if ``True``, the summary is also
           printed to stdout.
 
     Methods
@@ -335,34 +335,34 @@ def make_params(imf_type, sfh_type, dm_type, av_type, age_type=None, kwargs=None
     imf_type : {'spl', 'bpl', 'ln'}
         IMF parameterization:
 
-        * ``'spl'`` – single power-law (free parameter: ``slope``).
-        * ``'bpl'`` – broken power-law (free: ``alow``, ``ahigh``, ``bm``).
-        * ``'ln'``  – lognormal + high-mass power-law (free: ``mean``,
+        * ``'spl'`` - single power-law (free parameter: ``slope``).
+        * ``'bpl'`` - broken power-law (free: ``alow``, ``ahigh``, ``bm``).
+        * ``'ln'``  - lognormal + high-mass power-law (free: ``mean``,
           ``sigma``, ``bm``, ``slope``).
     sfh_type : {'gaussian', 'grid', 'empirical_mdf'}
         Star-formation history type:
 
-        * ``'gaussian'``      – 2-D Gaussian in (age, [Fe/H]); adds
+        * ``'gaussian'``      - 2-D Gaussian in (age, [Fe/H]); adds
           ``age``, ``sig_age``, ``feh``, ``sig_feh``, ``age_feh_corr``.
-        * ``'grid'``          – no additional SFH parameters.
-        * ``'empirical_mdf'`` – empirical [Fe/H] + Gaussian or exponential
+        * ``'grid'``          - no additional SFH parameters.
+        * ``'empirical_mdf'`` - empirical [Fe/H] + Gaussian or exponential
           age (see ``age_type``).
     dm_type : {'gaussian', 'dg'}
         Distance-modulus distribution:
 
-        * ``'dg'``      – double-Gaussian; adds ``mu1``, ``deltamu``,
+        * ``'dg'``      - double-Gaussian; adds ``mu1``, ``deltamu``,
           ``sigma1``, ``sigma2``, ``amprat`` (all fixed by default).
-        * ``'gaussian'``– single Gaussian; adds ``dm``, ``sig_dm`` (fixed).
+        * ``'gaussian'``- single Gaussian; adds ``dm``, ``sig_dm`` (fixed).
     av_type : {'lognormal', 'gaussian'}
         Extinction distribution:
 
-        * ``'lognormal'`` – adds ``av_logn_mu``, ``av_logn_sigma`` (fixed).
-        * ``'gaussian'``  – adds ``av``, ``sig_av`` (fixed).
+        * ``'lognormal'`` - adds ``av_logn_mu``, ``av_logn_sigma`` (fixed).
+        * ``'gaussian'``  - adds ``av``, ``sig_av`` (fixed).
     age_type : {'gaussian', 'exponential'} or None, optional
         Age distribution for ``sfh_type='empirical_mdf'``:
 
-        * ``'gaussian'``    – adds ``age``, ``sig_age``.
-        * ``'exponential'`` – adds ``t0``, ``tau`` (both fixed by default).
+        * ``'gaussian'``    - adds ``age``, ``sig_age``.
+        * ``'exponential'`` - adds ``t0``, ``tau`` (both fixed by default).
     kwargs : dict or None, optional
         Passed directly to :class:`SWParameters` for printing/saving
         control (see :class:`SWParameters` for supported keys).
