@@ -4,3 +4,4 @@ test*
 *pycache*
 .spyproject/*
 *.ipynb_checkpoints*
+*sbi-logs*
