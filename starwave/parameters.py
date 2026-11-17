@@ -45,11 +45,21 @@ class SWParameters(OrderedDict):
     
     """
     
-    def __init__(self, params_dict, kwargs = None):
-        
+    def __init__(self, params_dict=None, kwargs=None):
+        if params_dict is None:
+            params_dict = {}
+        if kwargs is None:
+            kwargs = {}
+
         super().__init__(params_dict)
         self.dict = params_dict
         self.kwargs = kwargs
+
+    def __reduce__(self):
+        return (
+            type(self),
+            (dict(self.dict), self.kwargs),
+        )
         
     def __getitem__(self, param):
          return self.dict[param]
@@ -112,6 +122,16 @@ class SWParameter(OrderedDict):
                           fixed = self.fixed)
         
         super().__init__(self.param_dict)
+
+    def __reduce__(self):
+        return type(self), (
+            self.name,
+            self.value,
+            self.bounds,
+            self.distribution,
+            self.dist_kwargs,
+            self.fixed,
+        )
         
     def set(self, value = None, bounds = None, distribution = None, dist_kwargs = None, fixed = None):
         

@@ -1,3 +1,6 @@
+from joblib.externals.loky import set_loky_pickler
+set_loky_pickler("dill")
+
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.kernel_approximation import Nystroem
@@ -27,11 +30,13 @@ from sbi.inference import SNPE, prepare_for_sbi, simulate_for_sbi
 from sbi.utils.get_nn_models import posterior_nn
 
 import extinction
-
+from parallel import custom_simulate_for_sbi
 from joblib.externals.loky import set_loky_pickler
 set_loky_pickler("dill")
 
 import logging
+
+
 
 class StarWave:
     """
@@ -262,6 +267,20 @@ class StarWave:
         sfhs = gr_dict['SFH'].sample(nstars)
         dms = gr_dict['DM'].sample(nstars)
         avs = gr_dict['av'].sample(nstars)
+
+        # --- Inside your class method ---
+
+        # 1. Package the arguments for each star
+        tasks = [
+            (ii, masses[ii], binqs[ii], sfhs[ii][0], sfhs[ii][1], dms[ii], avs[ii],
+            self.lim_logmass, self.iso_int, self.bands, self.band_lambdas, self.Rv)
+            for ii in range(nstars)
+        ]
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            for ii, mag, ext in executor.map(_process_star, tasks):
+                if mag is not None:
+                    input_mags[ii, :] = mag
+                    exts[ii, :] = ext
 
         for ii in range(nstars):
 
@@ -667,8 +686,8 @@ class StarWave:
         """
 
 
-        if cores == 1:
-            pass # IMPLEMENT SBI MULTICORE
+        # if cores == 1:
+        #     pass # IMPLEMENT SBI MULTICORE
 
         scaled_observed_cmd = self.init_scaler(observed_cmd, gamma = gamma, n_components = n_components, best_gamma_kw = best_gamma_kw)
         obs = torch.tensor(self.kernel_representation(scaled_observed_cmd, self.mapping))
@@ -695,10 +714,13 @@ class StarWave:
 
         self.posteriors = [];
         proposal = self.prior
-
+        print('number of workers = %i' % cores)
         for _ in range(n_rounds):
             print('Starting round %i of neural inference...' % (_+1))
-            theta, x = simulate_for_sbi(self.simulator, proposal, num_simulations=n_sims, num_workers = cores)
+            if cores == 1:
+                theta, x = simulate_for_sbi(self.simulator, proposal, num_simulations=n_sims, num_workers = cores)
+            else:
+                theta, x = custom_simulate_for_sbi(self.simulator, proposal, num_simulations=n_sims, num_workers = cores)
             density_estimator = inference.append_simulations(theta, x, proposal=proposal).train(**train_kw)
             posterior = inference.build_posterior(density_estimator)
             self.posteriors.append(posterior)
